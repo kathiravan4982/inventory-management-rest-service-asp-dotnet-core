@@ -8,12 +8,12 @@ The application focuses on practical server-side data handling such as JWT issua
 
 ## Key Features
 
-- Issues signed JSON Web Tokens through `POST api/token` using `JwtSecurityToken` and `SecurityAlgorithms.HmacSha256`.
-- Secures product endpoints with `[Authorize]` in `ProductsController` exposed at `api/products`.
-- Supports adding, reading, updating, and deleting product records through MVC controller actions.
-- Provides server-side query filtering on `GET api/products` using the `inStock`, `skip`, and `take` parameters with `IQueryable<T>` and `Skip` / `Take` operators.
-- Uses Entity Framework Core with `InventoryContext` for database operations against SQL Server.
-- Configures JWT bearer authentication, routing, authorization, and controllers through `Startup.ConfigureServices` and `Startup.Configure`.
+- **JWT token issuance**: `TokenController` issues a signed JSON Web Token through `POST api/token` using `JwtSecurityToken` and `SecurityAlgorithms.HmacSha256`, so clients can authenticate once and reuse the token.
+- **Token-protected product API**: `ProductsController` is decorated with `[Authorize]` and exposed at `api/products`, blocking all calls that do not include a valid Bearer token.
+- **Complete CRUD for products**: Supports creating, reading, updating, and deleting product records through standard MVC controller actions (`POST`, `GET`, `PUT`, `DELETE`).
+- **Flexible query filtering**: `GET api/products` accepts `inStock`, `skip`, and `take` parameters and applies them with `IQueryable<T>`, `Where`, `Skip`, and `Take` so clients can paginate and filter inventory.
+- **Entity Framework Core data access**: Uses `InventoryContext` (a `DbContext`) to read and write `Products` and `UserInfo` data against SQL Server with connection pooling.
+- **Centralized configuration in `Startup`**: Registers JWT bearer authentication, EF Core, routing, authorization, and MVC controllers in `Startup.ConfigureServices` and `Startup.Configure` for a clean startup pipeline.
 
 ## Prerequisites
 
@@ -79,9 +79,6 @@ dotnet run
 
 ## Project Structure
 
-- `InventoryService/Program.cs` — entry point that builds the host and starts the ASP.NET Core application.
-- `InventoryService/Startup.cs` — configures services such as EF Core, JWT bearer authentication, and the HTTP request pipeline.
-- `InventoryService/appsettings.json` — stores the SQL Server connection string and JWT signing settings.
 - `InventoryService/Controllers/TokenController.cs` — issues a signed JWT in response to a valid user login request.
 - `InventoryService/Controllers/ProductsController.cs` — exposes the authorized CRUD endpoints for the inventory catalog.
 - `InventoryService/Models/Products.cs` — defines the product model stored in SQL Server.
@@ -92,7 +89,3 @@ dotnet run
 
 - To report an issue specific to this sample, open a GitHub issue in this repository.
 - Official documentation: [ASP.NET Core documentation](https://learn.microsoft.com/aspnet/core/)
-
-## License
-
-[VERIFY: repository license is not provided]
