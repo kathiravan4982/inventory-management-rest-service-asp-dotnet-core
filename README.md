@@ -1,17 +1,98 @@
-# Inventory CRUD REST Service using ASP.NET CORE with JWT Token Authentication 
+# How to Build a JWT-Secured CRUD REST Service with ASP.NET Core
 
-This repository contains the inventory management REST service, built with ASP.NET Core 3.1 and Entity Framework 3.1 to illustrate creating REST API to performing CRUD actions and, how to create JWT token and secure API.
+## Project Overview
+
+This sample shows how an ASP.NET Core 3.1 Web API integrates JWT bearer authentication with Entity Framework Core to expose a token-protected inventory catalog over HTTP. The service issues a signed JSON Web Token from a dedicated login controller and uses the same token to authorize create, read, update, and delete operations against SQL Server through MVC controller actions.
+
+The application focuses on practical server-side data handling such as JWT issuance, role- and claim-based authorization, paging, filtering, and full CRUD operations on a SQL Server database.
+
+## Key Features
+
+- Issues signed JSON Web Tokens through `POST api/token` using `JwtSecurityToken` and `SecurityAlgorithms.HmacSha256`.
+- Secures product endpoints with `[Authorize]` in `ProductsController` exposed at `api/products`.
+- Supports adding, reading, updating, and deleting product records through MVC controller actions.
+- Provides server-side query filtering on `GET api/products` using the `inStock`, `skip`, and `take` parameters with `IQueryable<T>` and `Skip` / `Take` operators.
+- Uses Entity Framework Core with `InventoryContext` for database operations against SQL Server.
+- Configures JWT bearer authentication, routing, authorization, and controllers through `Startup.ConfigureServices` and `Startup.Configure`.
 
 ## Prerequisites
 
-* Visual Studio 2022
-* SQL Server 2017
-* Postman
+- Visual Studio 2022 or Visual Studio Code
+- .NET SDK compatible with the project's target framework
+- SQL Server 2017 or later / SQL Server Express / SQL Server LocalDB
+- Postman or any HTTP client for testing the API
 
-## How to run the project
+## Running the Application
 
-* Checkout this project to a location in your disk.
-* Open the solution file using the Visual Studio 2022.
-* Restore the NuGet packages by rebuilding the solution.
-* Change the connection string in the appsettings.json file that points to your SQL Server.
-* Run the project.
+### Visual Studio 2022
+
+1. Clone or download this repository.
+2. Open the solution file:
+
+   `InventoryService.sln`
+
+3. Update the SQL Server connection string under `ConnectionStrings:InventoryDatabase` in `InventoryService/appsettings.json` with the server name, database name, and authentication details for a database that you are authorized to access.
+4. Update the JWT settings under `Jwt` in `InventoryService/appsettings.json` (`Key`, `Issuer`, `Audience`, `Subject`) with values suitable for your environment.
+5. Restore the NuGet packages by rebuilding the solution.
+6. Set the startup project to:
+
+   `InventoryService`
+
+7. Build the solution.
+8. Run the application using `Ctrl+F5`.
+9. Open the application URL displayed by Visual Studio after launch (for example `https://localhost:5001/swagger`, `https://localhost:5001/api/products`, or the IIS Express profile URL).
+10. Verify that an unauthenticated request to `GET api/products` returns `401 Unauthorized` and that `POST api/token` with valid credentials returns a JWT that you can attach as a Bearer token to the `api/products` requests.
+
+### Visual Studio Code
+
+1. Clone or download this repository.
+2. Open the repository folder in Visual Studio Code.
+3. Open the integrated terminal.
+4. Navigate to the project directory:
+
+```bash
+cd InventoryService
+```
+
+5. Update the SQL Server connection string under `ConnectionStrings:InventoryDatabase` in `InventoryService/appsettings.json` with the server name, database name, and authentication details for a database that you are authorized to access.
+6. Update the JWT settings under `Jwt` in `InventoryService/appsettings.json` (`Key`, `Issuer`, `Audience`, `Subject`) with values suitable for your environment.
+7. Restore the NuGet packages:
+
+```bash
+dotnet restore
+```
+
+8. Build the project:
+
+```bash
+dotnet build
+```
+
+9. Run the project:
+
+```bash
+dotnet run
+```
+
+10. Open the local URL displayed in the terminal after the application starts (for example `https://localhost:5001/api/products`).
+11. Verify that an unauthenticated request to `GET api/products` returns `401 Unauthorized` and that `POST api/token` with valid credentials returns a JWT that you can attach as a Bearer token to the `api/products` requests.
+
+## Project Structure
+
+- `InventoryService/Program.cs` — entry point that builds the host and starts the ASP.NET Core application.
+- `InventoryService/Startup.cs` — configures services such as EF Core, JWT bearer authentication, and the HTTP request pipeline.
+- `InventoryService/appsettings.json` — stores the SQL Server connection string and JWT signing settings.
+- `InventoryService/Controllers/TokenController.cs` — issues a signed JWT in response to a valid user login request.
+- `InventoryService/Controllers/ProductsController.cs` — exposes the authorized CRUD endpoints for the inventory catalog.
+- `InventoryService/Models/Products.cs` — defines the product model stored in SQL Server.
+- `InventoryService/Models/UserInfo.cs` — defines the user model used by the token endpoint.
+- `InventoryService/Models/InventoryContext.cs` — defines the Entity Framework Core database context used to access products and users.
+
+## Support and Feedback
+
+- To report an issue specific to this sample, open a GitHub issue in this repository.
+- Official documentation: [ASP.NET Core documentation](https://learn.microsoft.com/aspnet/core/)
+
+## License
+
+[VERIFY: repository license is not provided]
