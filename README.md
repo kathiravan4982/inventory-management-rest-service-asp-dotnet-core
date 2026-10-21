@@ -1,19 +1,17 @@
-# How to Build a JWT-Secured CRUD REST Service with ASP.NET Core
+# Inventory Management REST Service Using ASP.NET Core with JWT Token Authentication
 
-## Project Overview
+## Overview
 
-This sample shows how an ASP.NET Core 3.1 Web API integrates JWT bearer authentication with Entity Framework Core to expose a token-protected inventory catalog over HTTP. The service issues a signed JSON Web Token from a dedicated login controller and uses the same token to authorize create, read, update, and delete operations against SQL Server through MVC controller actions.
-
-The application focuses on practical server-side data handling such as JWT issuance, role- and claim-based authorization, paging, filtering, and full CRUD operations on a SQL Server database.
+This sample shows how to build a JWT-secured inventory REST service with ASP.NET Core 3.1, Entity Framework Core, and SQL Server. The service issues a signed JSON Web Token from a dedicated token endpoint and uses that token to authorize CRUD operations on a product catalog exposed over HTTP, demonstrating a practical pattern for creating and protecting REST APIs with bearer authentication and server-side data access.
 
 ## Key Features
 
-- **JWT token issuance**: `TokenController` issues a signed JSON Web Token through `POST api/token` using `JwtSecurityToken` and `SecurityAlgorithms.HmacSha256`, so clients can authenticate once and reuse the token.
-- **Token-protected product API**: `ProductsController` is decorated with `[Authorize]` and exposed at `api/products`, blocking all calls that do not include a valid Bearer token.
-- **Complete CRUD for products**: Supports creating, reading, updating, and deleting product records through standard MVC controller actions (`POST`, `GET`, `PUT`, `DELETE`).
-- **Flexible query filtering**: `GET api/products` accepts `inStock`, `skip`, and `take` parameters and applies them with `IQueryable<T>`, `Where`, `Skip`, and `Take` so clients can paginate and filter inventory.
-- **Entity Framework Core data access**: Uses `InventoryContext` (a `DbContext`) to read and write `Products` and `UserInfo` data against SQL Server with connection pooling.
-- **Centralized configuration in `Startup`**: Registers JWT bearer authentication, EF Core, routing, authorization, and MVC controllers in `Startup.ConfigureServices` and `Startup.Configure` for a clean startup pipeline.
+- Issues a signed JSON Web Token through the dedicated token API endpoint `POST api/token` so clients can authenticate once and reuse the token in subsequent requests.
+- Secures the product catalog with bearer-token authorization applied to the products API controller, so unauthenticated requests are rejected.
+- Provides full create, read, update, and delete operations for product records through standard REST actions exposed at the product API route `api/products`.
+- Supports filtering and paging of the product list using the query parameters `inStock` (filter by availability), `skip` (rows to skip), and `take` (rows to return), so clients can page through inventory by availability and range.
+- Persists product and user data in SQL Server through an Entity Framework Core database context with connection pooling for efficient, reusable database connections.
+- Centralizes service registration and middleware configuration for authentication, authorization, routing, and controllers in the application startup so the request pipeline is configured in one place.
 
 ## Prerequisites
 
@@ -22,7 +20,7 @@ The application focuses on practical server-side data handling such as JWT issua
 - SQL Server 2017 or later / SQL Server Express / SQL Server LocalDB
 - Postman or any HTTP client for testing the API
 
-## Running the Application
+## How to Run the Project
 
 ### Visual Studio 2022
 
@@ -40,7 +38,7 @@ The application focuses on practical server-side data handling such as JWT issua
 
 7. Build the solution.
 8. Run the application using `Ctrl+F5`.
-9. Open the application URL displayed by Visual Studio after launch (for example `https://localhost:5001/swagger`, `https://localhost:5001/api/products`, or the IIS Express profile URL).
+9. Open the application URL displayed by Visual Studio after launch.
 10. Verify that an unauthenticated request to `GET api/products` returns `401 Unauthorized` and that `POST api/token` with valid credentials returns a JWT that you can attach as a Bearer token to the `api/products` requests.
 
 ### Visual Studio Code
@@ -74,7 +72,7 @@ dotnet build
 dotnet run
 ```
 
-10. Open the local URL displayed in the terminal after the application starts (for example `https://localhost:5001/api/products`).
+10. Open the local URL displayed in the terminal after the application starts.
 11. Verify that an unauthenticated request to `GET api/products` returns `401 Unauthorized` and that `POST api/token` with valid credentials returns a JWT that you can attach as a Bearer token to the `api/products` requests.
 
 ## Project Structure
