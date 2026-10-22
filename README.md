@@ -27,7 +27,7 @@ This sample shows how to build a JWT-secured inventory REST service with ASP.NET
 1. Clone or download this repository.
 2. Open the solution file:
 
-   `InventoryService.sln`
+   `InventoryService/InventoryService.sln`
 
 3. Update the SQL Server connection string under `ConnectionStrings:InventoryDatabase` in `InventoryService/appsettings.json` with the server name, database name, and authentication details for a database that you are authorized to access.
 4. Update the JWT settings under `Jwt` in `InventoryService/appsettings.json` (`Key`, `Issuer`, `Audience`, `Subject`) with values suitable for your environment.
